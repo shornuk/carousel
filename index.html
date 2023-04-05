@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Tailwindcss -->
+  	<script src="https://cdn.tailwindcss.com"></script>
+  	<script defer src="https://unpkg.com/alpinejs@3.10.5/dist/cdn.min.js"></script>
+	<title>Carousel</title>
+	<style type="text/css">
+		.scrollbar-hide::-webkit-scrollbar {
+		    display: none;
+		}
+
+		.scrollbar-hide {
+		    -ms-overflow-style: none;  /* IE and Edge */
+		    scrollbar-width: none;  /* Firefox */
+		}
+	</style>
+</head>
+    <body>
+    	<div class="max-w-2xl mx-auto py-12">
+
+            <h1 class="px-4 md:px-0 font-bold text-3xl mb-8">Alpine + Tailwind CSS - Carousel Slider</h1>
+
+    		<div class="px-4 md:px-0 mb-8">
+    			<p>https://carouth.com/articles/flexible-carousel-with-alpinejs</p>
+    		</div>
+
+    		<div class="px-4 md:px-0">
+    			<h2 class="font-bold text-2xl">A gallery of images</h2>
+    		</div>
+
+    		<div x-data="carousel()" x-init="init()" class="relative">
+                <ul x-ref="container" class="scrollbar-hide [scroll-behaviour:smooth] w-full flex overflow-x-scroll snap-x snap-mandatory mb-6 px-4 md:px-0 py-4 space-x-4">
+                    <li class="w-[60%] box-content flex-shrink-0 snap-center">
+                    	<div class="rounded-2xl">
+                    		<img src="https://walkiees.s3.amazonaws.com/walks/B/blackness-castle/_ar16x9retina/7EB921B6-9C84-4EDE-BE12-8E0E8D182DAB.jpeg" class="w-full rounded-2xl">
+                    	</div>
+                    </li>
+                    <li class="w-[60%] box-content flex-shrink-0 snap-center">
+                    	<div class="rounded-2xl">
+                    		<img src="https://walkiees.s3.amazonaws.com/walks/B/blackness-castle/_ar16x9retina/7EB921B6-9C84-4EDE-BE12-8E0E8D182DAB.jpeg" class="w-full rounded-2xl">
+                    	</div>
+                    </li>
+                    <li class="w-[60%] box-content flex-shrink-0 snap-center">
+                    	<div class="rounded-2xl">
+                    		<img src="https://walkiees.s3.amazonaws.com/walks/B/blackness-castle/_ar16x9retina/7EB921B6-9C84-4EDE-BE12-8E0E8D182DAB.jpeg" class="w-full rounded-2xl">
+                    	</div>
+                    </li>
+                    <li class="w-[60%] box-content flex-shrink-0 snap-center">
+                    	<div class="rounded-2xl">
+                    		<img src="https://walkiees.s3.amazonaws.com/walks/B/blackness-castle/_ar16x9retina/7EB921B6-9C84-4EDE-BE12-8E0E8D182DAB.jpeg" class="w-full rounded-2xl">
+                    	</div>
+                    </li>
+                    <li class="w-[60%] box-content flex-shrink-0 snap-center">
+                    	<div class="rounded-2xl">
+                    		<img src="https://walkiees.s3.amazonaws.com/walks/B/blackness-castle/_ar16x9retina/7EB921B6-9C84-4EDE-BE12-8E0E8D182DAB.jpeg" class="w-full rounded-2xl">
+                    	</div>
+                    </li>
+                    <li class="w-[60%] box-content flex-shrink-0 snap-center">
+                    	<div class="rounded-2xl">
+                    		<img src="https://walkiees.s3.amazonaws.com/walks/B/blackness-castle/_ar16x9retina/7EB921B6-9C84-4EDE-BE12-8E0E8D182DAB.jpeg" class="w-full rounded-2xl">
+                    	</div>
+                    </li>
+                    <li class="w-[60%] box-content flex-shrink-0 snap-center">
+                    	<div class="rounded-2xl">
+                    		<img src="https://walkiees.s3.amazonaws.com/walks/B/blackness-castle/_ar16x9retina/7EB921B6-9C84-4EDE-BE12-8E0E8D182DAB.jpeg" class="w-full rounded-2xl">
+                    	</div>
+                    </li>
+                </ul>
+                <!-- Left navigation -->
+                <div class="z-10 absolute inset-y-0 flex items-center justify-center left-0 md:-left-4" x-show="prev !== null">
+                    <button @click="scrollTo(prev)" class="bg-white w-12 h-12 rounded-full flex items-center justify-center border shadow">&larr;</button>
+                </div>
+                <!-- Right navigation -->
+                <div class="z-10 absolute inset-y-0 flex items-center justify-center right-0 md:-right-4" x-show="next !== null">
+        			<button @click="scrollTo(next)" class="bg-white w-12 h-12 rounded-full flex items-center justify-center border shadow">&rarr;</button>
+                </div>
+            </div>
+
+        	<script>
+                window.carousel = function () {
+                    return {
+                        container: null,
+                        prev: null,
+                        next: null,
+                        init() {
+                            this.container = this.$refs.container
+                            this.update();
+                            this.container.addEventListener('scroll', this.update.bind(this), {passive: true});
+                        },
+                        update() {
+                            const rect = this.container.getBoundingClientRect();
+                            const visibleElements = Array.from(this.container.children).filter((child) => {
+                                const childRect = child.getBoundingClientRect()
+                                return childRect.left >= rect.left && childRect.right <= rect.right;
+                            });
+
+                            if (visibleElements.length > 0) {
+                                this.prev = this.getPrevElement(visibleElements);
+                                this.next = this.getNextElement(visibleElements);
+                            }
+                        },
+                        getPrevElement(list) {
+                            const sibling = list[0].previousElementSibling;
+                            if (sibling instanceof HTMLElement) {
+                                return sibling;
+                            }
+                            return null;
+                        },
+                        getNextElement(list) {
+                            const sibling = list[list.length - 1].nextElementSibling;
+                            if (sibling instanceof HTMLElement) {
+                                return sibling;
+                            }
+                            return null;
+                        },
+                        scrollTo(element) {
+                            const current = this.container;
+                            if (!current || !element) return;
+                            const nextScrollPosition =
+                                element.offsetLeft +
+                                element.getBoundingClientRect().width / 2 -
+                                current.getBoundingClientRect().width / 2;
+                                current.scroll({
+                                left: nextScrollPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                    };
+                }
+            </script>
+
+
+    		<div class="px-4 md:px-0">
+    			<p>Lorem ipsum dolor sit amet consectetur adipiscing elit, lobortis interdum etiam turpis inceptos ornare odio class, dui ad aliquet dignissim cras a. Vivamus nullam habitasse nascetur dapibus sit augue nulla posuere vitae tellus leo convallis dui, suscipit ac elementum pellentesque molestie commodo vehicula fusce mus etiam porta sociis. Amet ligula quam proin in platea purus ipsum primis tincidunt, mus congue curabitur a porttitor ullamcorper senectus gravida, conubia nisi aptent habitant sagittis cum malesuada eleifend. In himenaeos malesuada feugiat ultrices dignissim lacinia justo sit mollis pharetra, sollicitudin nam semper leo nascetur viverra ornare curae amet, massa eleifend nulla fames senectus litora a augue scelerisque. A nibh fermentum nec ut massa nulla maecenas habitant inceptos tempor, taciti leo lobortis quis curae curabitur semper arcu etiam sociis, suscipit eleifend amet placerat tristique odio per consequat hac.
+    			</p>
+    		</div>
+    	</div>
+    </body>
+</html>
